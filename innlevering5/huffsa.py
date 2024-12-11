@@ -58,6 +58,21 @@ def planet_sok(conn):
 
 def legg_inn_resultat(conn):
     # TODO: Oppg 2
+    print("Put in result")
+
+    planet = input("Name of planet")
+    skummelInp = input("Is it scary j/n")
+    skummel = True if skummelInp == "j" else False
+    intelligentINp = input("Is it intelligent j/n")
+    intelligent = True if intelligentINp == "j" else False
+    beskrivelse = input("Gi en beskrivelse til planeten")
+
+    query = f"UPDATE PLANET SET skummel = {skummel},intelligent={intelligent},beskrivelse={beskrivelse} WHERE navn = {planet}"
+    
+    cursor = conn.cursor() 
+    cursor.execute(query)
+    conn.commit()
+    print("Result updated")
 
 if __name__ == "__main__":
     huffsa()
