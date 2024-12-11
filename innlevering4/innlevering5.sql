@@ -99,3 +99,42 @@ JOIN film AS f ON (fg1.filmid = f.filmid)
 Where fg1.genre != 'Sci-FI' and fg.2genre != 'Horror'
 
 -- 6727 rows
+
+--Task 10
+WITH interestingMovies AS ( 
+    SELECT f.title AS title, f.filmid AS filmid
+    FROM filmrating AS fr JOIN film AS f ON(f.filmid = fr.filmid) 
+    JOIN filmitem AS fi ON(f.filmid = fi.filmid)
+    WHERE fr.votes > 1000 AND fr.rank >= 8 AND fi.filmtype = 'C'
+    ORDER BY fr.rank DESC, fr.votes DESC
+),
+top10 AS (
+    SELECT im.title
+    FROM interestingMovies AS im
+    LIMIT 10
+),
+harrisonMovies AS (
+    SELECT im.title 
+    FROM interestingMovies AS im JOIN filmparticipation AS fp ON(fp.filmid = im.filmid)
+    JOIN person AS p ON(p.personid = fp.personid)
+    WHERE p.firstname LIKE '%Harrison%' AND p.lastname LIKE '%Ford%'
+),
+comedyRomance AS (
+    SELECT im.title
+    FROM interestingMovies AS im JOIN filmgenre AS fg ON (im.filmid = fg.filmid) 
+    WHERE fg.genre = 'Comedy' OR fg.genre = 'Romance'
+)
+SELECT *
+FROM (
+    SELECT top10.title
+    FROM top10
+    UNION
+    SELECT harrisonMovies.title
+    FROM harrisonMovies
+    UNION
+    SELECT comedyRomance.title
+    FROM comedyRomance
+) AS sub;
+
+--170 Rows yippie
+
